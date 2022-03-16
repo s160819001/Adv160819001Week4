@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import dk.ubaya.advweek4.R
+import dk.ubaya.advweek4.util.loadImage
 import dk.ubaya.advweek4.viewmodel.DetailViewModel
 import dk.ubaya.advweek4.viewmodel.ListViewModel
 import kotlinx.android.synthetic.main.fragment_student_detail.*
@@ -30,13 +31,16 @@ class StudentDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
-        viewModel.fetch()
+        viewModel.fetch(StudentDetailFragmentArgs.fromBundle(requireArguments()).id.toString())
 
         viewModel.studentLD.observe(viewLifecycleOwner, Observer {
             txtId.setText(it.id)
             txtName.setText(it.name)
+            imageView2.loadImage(it.photoUrl.toString(), progressBar)
             txtBod.setText(it.bod)
             txtPhone.setText(it.phone)
         })
+
+
     }
 }

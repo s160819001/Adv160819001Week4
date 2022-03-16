@@ -8,7 +8,7 @@ import com.squareup.picasso.Picasso
 import dk.ubaya.advweek4.R
 import java.lang.Exception
 
-fun ImageView.loadImage(url:String, progressBar:ProgressBar){
+fun ImageView.loadImage(url:String, progressBar:ProgressBar?=null){
     Picasso.get()
         .load(url)
         .resize(400,400)
@@ -16,7 +16,7 @@ fun ImageView.loadImage(url:String, progressBar:ProgressBar){
         .error(R.drawable.ic_baseline_error_24)
         .into(this, object:Callback{
             override fun onSuccess() {
-                progressBar.visibility = View.GONE
+                progressBar?.visibility = View.GONE
             }
 
             override fun onError(e: Exception?) {
