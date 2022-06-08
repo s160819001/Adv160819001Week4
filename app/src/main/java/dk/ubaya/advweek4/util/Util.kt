@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.QuickContactBadge
+import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import dk.ubaya.advweek4.R
@@ -42,4 +43,9 @@ fun ImageView.loadImage(url:String, progressBar:ProgressBar?=null){
             }
 
         })
+}
+
+@BindingAdapter("android:imageUrl","android:progressBar")
+fun loadPhotoUrl(v:ImageView, url: String,pb:ProgressBar){
+    v.loadImage(url,pb)
 }

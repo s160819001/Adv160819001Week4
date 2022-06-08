@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import dk.ubaya.advweek4.R
+import dk.ubaya.advweek4.databinding.FragmentStudentDetailBinding
+import dk.ubaya.advweek4.model.Student
 import dk.ubaya.advweek4.util.loadImage
 import dk.ubaya.advweek4.viewmodel.DetailViewModel
 import dk.ubaya.advweek4.viewmodel.ListViewModel
@@ -22,15 +25,18 @@ import kotlinx.android.synthetic.main.student_list_item.txtName
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class StudentDetailFragment : Fragment() {
+class StudentDetailFragment : Fragment(), ButtonNotifClickListener {
     private lateinit var viewModel: DetailViewModel
+    private lateinit var dataBinding:FragmentStudentDetailBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student_detail, container, false)
+//        return inflater.inflate(R.layout.fragment_student_detail, container, false)
+        dataBinding=DataBindingUtil.inflate<FragmentStudentDetailBinding>(inflater,R.layout.fragment_student_detail,container,false)
+        return dataBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,24 +46,35 @@ class StudentDetailFragment : Fragment() {
         viewModel.fetch(StudentDetailFragmentArgs.fromBundle(requireArguments()).id.toString())
 
         viewModel.studentLD.observe(viewLifecycleOwner, Observer {
-            txtId.setText(it.id)
-            txtName.setText(it.name)
-            imageView2.loadImage(it.photoUrl.toString(), progressBar)
-            txtBod.setText(it.bod)
-            txtPhone.setText(it.phone)
-
-            var student=it
-            btnNotif.setOnClickListener {
-                Observable.timer(5, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        MainActivity.showNotification(student.name.toString(),"A new notification created", R.drawable.ic_baseline_person_24)
-                    }
-
-            }
+            dataBinding.student=it
+            dataBinding.listener=this
+//            txtId.setText(it.id)
+//            txtName.setText(it.name)
+//            imageView2.loadImage(it.photoUrl.toString(), progressBar)
+//            txtBod.setText(it.bod)
+//            txtPhone.setText(it.phone)
+//
+//            var student=it
+//            btnNotif.setOnClickListener {
+//                Observable.timer(5, TimeUnit.SECONDS)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe {
+//                        MainActivity.showNotification(student.name.toString(),"A new notification created", R.drawable.ic_baseline_person_24)
+//                    }
+//
+//            }
         })
 
 
+    }
+
+    override fun onButtonNotifClick(v: View, obj:Student) {
+        Observable.timer(5, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        MainActivity.showNotification(obj.name.toString(),"A new notification created", R.drawable.ic_baseline_person_24)
+                    }
     }
 }
